@@ -3,6 +3,12 @@ module MyIrb::Misc
     exit
   end
 
+  # By default +pp+ returns passed value which is then prited by IRB, turn that off
+  def pp(*args)
+    super
+    nil
+  end
+
   # Profiles passed block
   def profile(min_percent)
     require "ruby-prof"

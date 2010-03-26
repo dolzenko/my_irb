@@ -4,6 +4,7 @@ module MyIrb
   def main
     init_rubygems
     require "English"
+    require "pp"
     save_history
     setup_after_initialize_hook
   end
@@ -17,7 +18,7 @@ module MyIrb
     begin
       require "rubygems"
     rescue LoadError => err
-      warn "Couldn't load RubyGems: #{err}"
+      warn "Couldn't load RubyGems: #{ err }"
     end
   end
 
@@ -66,6 +67,31 @@ module MyIrb
     root_based_name = extension_file_name.sub(/^#{ Regexp.escape root }/, "").sub(/\.rb$/, "")
     MyIrb::ActiveSupport::Inflector.constantize(MyIrb::ActiveSupport::Inflector.camelize(root_based_name))
   rescue NameError
+  end
+
+  def self.gem(name)
+    retried = false
+
+    begin
+      require name
+    rescue LoadError
+      if retried
+        warn "#{ name } gem installation failed"
+        return
+      end
+
+      cmd = "gem install #{ name } || gem install --user-install #{ name }"
+      warn "#{ name } gem not installed, trying to install with: #{ cmd }"
+      if system(cmd) && Gem.activate(name)
+        retried = true
+        retry
+      else
+        warn "#{ name } gem installation failed"
+        return
+      end
+    end
+
+    block_given? ? yield : true
   end
 end
 
