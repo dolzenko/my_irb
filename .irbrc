@@ -69,6 +69,7 @@ module MyIrb
   end
 
   def extension_module(extension_file_name)
+    require(File.join(root, "active_support_ripoffs"))
     root_based_name = extension_file_name.sub(/^#{ Regexp.escape root }/, "").sub(/\.rb$/, "")
     MyIrb::ActiveSupport::Inflector.constantize(MyIrb::ActiveSupport::Inflector.camelize(root_based_name))
   rescue NameError
