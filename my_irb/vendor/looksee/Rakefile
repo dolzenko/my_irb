@@ -1,0 +1,14 @@
+require 'rubygems'
+require 'fileutils'
+
+require './lib/looksee/version'
+
+# Configure the clean and clobber tasks.
+require 'rake/clean'
+require 'rbconfig'
+CLEAN.include('**/*.o')
+CLOBBER.include("ext/looksee/looksee.#{Config::CONFIG['DLEXT']}")
+
+Dir['tasks/**/*.rake'].each { |t| load t }
+
+task :default => "extconf:compile"
