@@ -60,7 +60,12 @@ module MyIrb
   end
 
   def root
-    File.expand_path("../", __FILE__)
+    real_irbrc_path = if File.symlink?(__FILE__)
+      File.expand_path(File.readlink(__FILE__), File.dirname(__FILE__))
+    else
+      __FILE__
+    end
+    File.expand_path("../", real_irbrc_path)
   end
 
   def extension_module(extension_file_name)
