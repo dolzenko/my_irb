@@ -88,7 +88,9 @@ module MyIrb
 
       cmd = "gem install #{ name } || gem install --user-install #{ name }"
       warn "#{ name } gem not installed, trying to install with: #{ cmd }"
-      if system(cmd) && Gem.activate(name)
+      if system(cmd)
+        Gem.refresh
+        Gem.activate(name)
         retried = true
         retry
       else
