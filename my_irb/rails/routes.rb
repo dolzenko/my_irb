@@ -12,14 +12,12 @@ module MyIrb::Rails
 
     def include_routes
       if Rails::VERSION::MAJOR == 2
-        puts "#{__FILE__}: including ActionController::UrlWriter to test polymorphic routes"
         include ActionController::UrlWriter
         self.default_url_options = { :host => SELFPORT }
       elsif Rails::VERSION::MAJOR == 3
-        # https://rails.lighthouseapp.com/projects/8994/tickets/4217-named-routes-outside-of-controllerview-confusion#ticket-4217-1
-        puts "TODO: Investigate why +include ActionController::UrlFor+ doesn't work" 
         include Rails.application.routes.url_helpers
       end
+      "Named routes included"
     end
 
     def rebuilding_routes
