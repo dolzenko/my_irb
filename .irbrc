@@ -60,6 +60,7 @@ module MyIrb
   end
 
   def root
+    # use Pathname.new(__FILE__).realpath here
     real_irbrc_path = if File.symlink?(__FILE__)
       File.expand_path(File.readlink(__FILE__), File.dirname(__FILE__))
     else
@@ -76,26 +77,44 @@ module MyIrb
   end
 
   def self.gem(name)
-    retried = false
+    loader = proc { require name }
 
-    begin
-      require name
-    rescue LoadError
-      if retried
-        warn "#{ name } gem installation failed"
-        return
+    fixers = []
+
+    if defined?(Bundler)
+      # break out of Bundler jail rudely
+      # http://github.com/carlhuda/bundler/issues/#issue/183/comment/225440
+      fixers << proc do
+        Gem.refresh
+        Gem.activate(name)
       end
-
+    end
+    
+    fixers << proc do
       cmd = "gem install #{ name } || gem install --user-install #{ name }"
       warn "#{ name } gem not installed, trying to install with: #{ cmd }"
+
       if system(cmd)
         Gem.refresh
         Gem.activate(name)
-        retried = true
-        retry
       else
         warn "#{ name } gem installation failed"
-        return
+      end
+    end
+
+    begin
+      loader.call
+    rescue Exception
+      if fixer = fixers.shift
+        begin
+          fixer.call # try to fix and retry
+        rescue Exception # ignore errors in fixers
+        end
+        retry
+      else
+        # no more fixers left, exiting
+        warn "failed to require #{ name } gem"
+        return false
       end
     end
 

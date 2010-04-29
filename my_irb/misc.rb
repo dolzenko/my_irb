@@ -1,9 +1,16 @@
 module MyIrb::Misc
+  # Debug something in block
+  def debug
+    require "ruby-debug"
+    debugger(2)
+    yield
+  end  
+  
   def q
     exit
   end
 
-  # By default +pp+ returns passed value which is then prited by IRB, turn that off
+  # By default +pp+ returns passed value which is then printed by IRB, turn that off
   def pp(*args)
     super
     nil

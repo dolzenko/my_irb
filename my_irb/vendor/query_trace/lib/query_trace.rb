@@ -51,7 +51,7 @@ module QueryTrace
   end
 
   def format_trace(trace)
-    if ActiveRecord::Base.colorize_logging
+    if defined?(Rails::LogSubscriber) ? Rails::LogSubscriber.colorize_logging : ActiveRecord::Base.colorize_logging
       if row_even
         message_color = "35;2"
       else
