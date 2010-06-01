@@ -18,6 +18,13 @@ module MyIrb::Rails
 
     def migrate
       rake "db:migrate"
+      # Since some Rails version migration loading was changed 
+      # from load to rescue.
+      # Which means that when migration runned from IRB session fails 
+      # it isn't reloaded on consequent attempts. 
+      # Workaround this by removing all migrations from $LOADED_FEATURES
+      $LOADED_FEATURES.reject! { |path| path.include?("db/migrate") }
+      nil
     end
 
     if ::Rails::VERSION::MAJOR == 2
