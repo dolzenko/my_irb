@@ -47,7 +47,12 @@ module MyIrb
     @@context = context
 
     for extension in extension_dirs.map(&Dir.method(:glob)).flatten
-      require(extension)
+      begin
+        require(extension)
+      rescue Exception => e
+        puts "MyIrb failed to require #{ extension } extension: #{ e.message }"
+        puts e.backtrace
+      end
       
       if (mod = extension_module(extension)).instance_of?(Module)
         context.main.extend(mod)
