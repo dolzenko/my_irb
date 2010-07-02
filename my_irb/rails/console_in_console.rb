@@ -1,4 +1,5 @@
-module MyIrb::Rails
+module MyIrb
+  module Rails
   # Brings some most often used shell commands to script/console prompt
   module ConsoleInConsole
     def about
@@ -81,5 +82,6 @@ module MyIrb::Rails
         nil
       end
     end
+  end
   end
 end
