@@ -4,7 +4,7 @@ module MyIrb
   module ConsoleInConsole
     def about
       require "rails/info"
-      Rails::Info
+      ::Rails::Info
     end
 
     %w(model controller scaffold migration).each do |generatable|
@@ -34,7 +34,7 @@ module MyIrb
           require "rails_generator"
           require "rails_generator/scripts/generate"
           if args.size == 1 && args[0].is_a?(String)
-            Rails::Generator::Scripts::Generate.new.run(args[0].split)
+            ::Rails::Generator::Scripts::Generate.new.run(args[0].split)
           end
         rescue Exception => e
           puts "Exception while running generator: #{ e.inspect }"
@@ -46,7 +46,7 @@ module MyIrb
         require "rails_generator"
         require "rails_generator/scripts/destroy"
         begin
-          Rails::Generator::Scripts::Destroy.new.run(args[0].split)
+          ::Rails::Generator::Scripts::Destroy.new.run(args[0].split)
         rescue Exception => e
           puts "Exception while running destroy: #{ e.inspect }"
         end
@@ -77,7 +77,7 @@ module MyIrb
       end
 
       def rake(task)
-        load(Rails.root + "Rakefile")
+        load(::Rails.root + "Rakefile")
         Rake::Task[task].execute # need +execute+ instead +invoke+ (invoke invokes the task only once)
         nil
       end

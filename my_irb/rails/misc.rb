@@ -3,5 +3,9 @@ module MyIrb::Rails
     def r!
       reload!
     end
+    
+    def sql(s)
+      ActiveRecord::Base.connection.execute s
+    end
   end
 end
