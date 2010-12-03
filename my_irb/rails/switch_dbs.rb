@@ -1,6 +1,6 @@
 module MyIrb::Rails
   module SwitchDbs
-    ::ActiveRecord::Base::configurations.keys.each do |env|
+    ::ActiveRecord::Base.configurations.keys.each do |env|
       # Generates methods like
       #
       #     use_production_db
@@ -13,6 +13,6 @@ module MyIrb::Rails
         ActiveRecord::Base.establish_connection env
         "Start using #{ env } environment database: #{ ::ActiveRecord::Base::configurations[env]["database"] }"
       end
-    end
+    end if ::ActiveRecord::Base.respond_to?(:configurations)
   end
 end
